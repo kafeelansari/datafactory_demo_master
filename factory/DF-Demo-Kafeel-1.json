@@ -1,0 +1,9 @@
+{
+	"name": "DF-Demo-Kafeel-1",
+	"location": "centralindia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "96b679db-a6f9-4ec6-b0e9-fc36abe986a4",
+		"tenantId": "9e889f5f-8ea6-431d-ba23-689996fda05a"
+	}
+}

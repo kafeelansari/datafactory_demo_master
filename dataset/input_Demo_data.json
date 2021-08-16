@@ -1,0 +1,19 @@
+{
+	"name": "input_Demo_data",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "linked_serv_demo_kafeel",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "demo_data.txt",
+				"folderPath": "input",
+				"container": "adfdemo"
+			}
+		}
+	}
+}

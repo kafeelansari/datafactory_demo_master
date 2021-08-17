@@ -8,6 +8,9 @@
 		"linked_serv_demo_kafeel_connectionString": {
 			"value": ""
 		},
+		"ls_demo_kafeel_dynamic_connectionString": {
+			"value": ""
+		},
 		"containerUri": {
 			"value": ""
 		},

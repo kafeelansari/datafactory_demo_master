@@ -11,6 +11,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'linked_serv_demo_kafeel'"
 		},
+		"ls_demo_kafeel_dynamic_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ls_demo_kafeel_dynamic'"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -40,6 +44,9 @@
 					},
 					"linked_serv_demo_kafeel_connectionString": {
 						"value": "[parameters('linked_serv_demo_kafeel_connectionString')]"
+					},
+					"ls_demo_kafeel_dynamic_connectionString": {
+						"value": "[parameters('ls_demo_kafeel_dynamic_connectionString')]"
 					}
 				}
 			},

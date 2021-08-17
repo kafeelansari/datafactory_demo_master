@@ -15,6 +15,14 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_demo_kafeel_dynamic'"
 		},
+		"EventDemoTrigger_properties_LoadHourlyandDailyData_parameters_FileName": {
+			"type": "string",
+			"defaultValue": "Test"
+		},
+		"EventDemoTrigger_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/457145b1-eda5-41ea-945b-f9e3585b8deb/resourceGroups/RG_Demo_Kafeel/providers/Microsoft.Storage/storageAccounts/demosakafeel"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -47,6 +55,12 @@
 					},
 					"ls_demo_kafeel_dynamic_connectionString": {
 						"value": "[parameters('ls_demo_kafeel_dynamic_connectionString')]"
+					},
+					"EventDemoTrigger_properties_LoadHourlyandDailyData_parameters_FileName": {
+						"value": "[parameters('EventDemoTrigger_properties_LoadHourlyandDailyData_parameters_FileName')]"
+					},
+					"EventDemoTrigger_properties_typeProperties_scope": {
+						"value": "[parameters('EventDemoTrigger_properties_typeProperties_scope')]"
 					}
 				}
 			},

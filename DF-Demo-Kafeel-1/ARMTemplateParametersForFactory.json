@@ -10,6 +10,12 @@
 		},
 		"ls_demo_kafeel_dynamic_connectionString": {
 			"value": ""
+		},
+		"EventDemoTrigger_properties_LoadHourlyandDailyData_parameters_FileName": {
+			"value": "Test"
+		},
+		"EventDemoTrigger_properties_typeProperties_scope": {
+			"value": "/subscriptions/457145b1-eda5-41ea-945b-f9e3585b8deb/resourceGroups/RG_Demo_Kafeel/providers/Microsoft.Storage/storageAccounts/demosakafeel"
 		}
 	}
 }

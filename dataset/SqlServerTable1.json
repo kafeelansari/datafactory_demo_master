@@ -2,7 +2,7 @@
 	"name": "SqlServerTable1",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "sql_linkedservice_dynamic",
+			"referenceName": "ls_demo_kafeel_dynamic",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {

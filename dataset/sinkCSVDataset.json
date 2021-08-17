@@ -1,0 +1,22 @@
+{
+	"name": "sinkCSVDataset",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "linked_serv_demo_kafeel",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "output",
+				"container": "adfdemo"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}

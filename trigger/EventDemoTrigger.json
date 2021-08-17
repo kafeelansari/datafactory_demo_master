@@ -8,6 +8,9 @@
 				"pipelineReference": {
 					"referenceName": "LoadHourlyandDailyData",
 					"type": "PipelineReference"
+				},
+				"parameters": {
+					"FileName": "Test"
 				}
 			}
 		],

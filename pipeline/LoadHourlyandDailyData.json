@@ -1,0 +1,14 @@
+{
+	"name": "LoadHourlyandDailyData",
+	"properties": {
+		"activities": [
+			{
+				"name": "Set FileType",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": []
+			}
+		],
+		"annotations": []
+	}
+}

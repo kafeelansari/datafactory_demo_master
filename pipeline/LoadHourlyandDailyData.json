@@ -149,6 +149,9 @@
 		"variables": {
 			"FileType": {
 				"type": "String"
+			},
+			"FolderName": {
+				"type": "String"
 			}
 		},
 		"annotations": []

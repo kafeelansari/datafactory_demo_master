@@ -1,0 +1,24 @@
+{
+	"name": "EventDemoTrigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "LoadHourlyandDailyData",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/adfdemo/blobs/input/xinput/HourlySales.csv",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/457145b1-eda5-41ea-945b-f9e3585b8deb/resourceGroups/RG_Demo_Kafeel/providers/Microsoft.Storage/storageAccounts/demosakafeel",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}

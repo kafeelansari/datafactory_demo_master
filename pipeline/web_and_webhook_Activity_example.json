@@ -17,7 +17,7 @@
 				"typeProperties": {
 					"url": "http://dummy.restapiexample.com/api/v1/employees",
 					"connectVia": {
-						"referenceName": "AutoResolveIntegrationRuntime",
+						"referenceName": "integrationRuntime1",
 						"type": "IntegrationRuntimeReference"
 					},
 					"method": "GET"

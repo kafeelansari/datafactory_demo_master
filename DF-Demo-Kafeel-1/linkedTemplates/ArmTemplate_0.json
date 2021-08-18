@@ -36,7 +36,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/AutoResolveIntegrationRuntime')]",
+			"name": "[concat(parameters('factoryName'), '/integrationRuntime1')]",
 			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -47,18 +47,13 @@
 						"dataFlowProperties": {
 							"computeType": "General",
 							"coreCount": 8,
-							"timeToLive": 0
+							"timeToLive": 10,
+							"cleanup": false
 						}
 					}
-				},
-				"managedVirtualNetwork": {
-					"type": "ManagedVirtualNetworkReference",
-					"referenceName": "default"
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/web_and_webhook_Activity_example')]",
@@ -81,7 +76,7 @@
 						"typeProperties": {
 							"url": "http://dummy.restapiexample.com/api/v1/employees",
 							"connectVia": {
-								"referenceName": "AutoResolveIntegrationRuntime",
+								"referenceName": "integrationRuntime1",
 								"type": "IntegrationRuntimeReference"
 							},
 							"method": "GET",
@@ -92,7 +87,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime1')]"
 			]
 		},
 		{
@@ -106,12 +101,12 @@
 					"connectionString": "[parameters('linked_serv_demo_kafeel_connectionString')]"
 				},
 				"connectVia": {
-					"referenceName": "AutoResolveIntegrationRuntime",
+					"referenceName": "integrationRuntime1",
 					"type": "IntegrationRuntimeReference"
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime1')]"
 			]
 		},
 		{
@@ -139,41 +134,37 @@
 					"connectionString": "[parameters('ls_demo_kafeel_dynamic_connectionString')]"
 				},
 				"connectVia": {
-					"referenceName": "AutoResolveIntegrationRuntime",
+					"referenceName": "integrationRuntime1",
 					"type": "IntegrationRuntimeReference"
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime1')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/SqlServerTable1')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
+			"name": "[concat(parameters('factoryName'), '/AutoResolveIntegrationRuntime')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ls_demo_kafeel_dynamic",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"tableName": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "SqlServerTable",
-				"schema": [],
+				"type": "Managed",
 				"typeProperties": {
-					"schema": "dbo",
-					"table": {
-						"value": "@dataset().tableName",
-						"type": "Expression"
+					"computeProperties": {
+						"location": "AutoResolve",
+						"dataFlowProperties": {
+							"computeType": "General",
+							"coreCount": 8,
+							"timeToLive": 0
+						}
 					}
+				},
+				"managedVirtualNetwork": {
+					"type": "ManagedVirtualNetworkReference",
+					"referenceName": "default"
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_demo_kafeel_dynamic')]"
+				"[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
 			]
 		},
 		{
@@ -827,45 +818,35 @@
 						"userProperties": [],
 						"typeProperties": {
 							"source": {
-								"type": "SqlServerSource",
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
+								"type": "BinarySource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
 							},
 							"sink": {
-								"type": "SqlServerSink"
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
+								"type": "BinarySink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
 								}
-							}
+							},
+							"enableStaging": false
 						},
 						"inputs": [
 							{
-								"referenceName": "SqlServerTable1",
+								"referenceName": "input_Demo_data",
 								"type": "DatasetReference",
-								"parameters": {
-									"tableName": {
-										"value": "@pipeline().parameters.SrcTable",
-										"type": "Expression"
-									}
-								}
+								"parameters": {}
 							}
 						],
 						"outputs": [
 							{
-								"referenceName": "SqlServerTable1",
+								"referenceName": "output_demo_data",
 								"type": "DatasetReference",
-								"parameters": {
-									"tableName": {
-										"value": "@pipeline().parameters.DestTable",
-										"type": "Expression"
-									}
-								}
+								"parameters": {}
 							}
 						]
 					}
@@ -881,7 +862,8 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SqlServerTable1')]"
+				"[concat(variables('factoryId'), '/datasets/input_Demo_data')]",
+				"[concat(variables('factoryId'), '/datasets/output_demo_data')]"
 			]
 		},
 		{

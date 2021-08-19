@@ -3,17 +3,7 @@
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Stopped",
-		"pipelines": [
-			{
-				"pipelineReference": {
-					"referenceName": "LoadHourlyandDailyData",
-					"type": "PipelineReference"
-				},
-				"parameters": {
-					"FileName": "Test"
-				}
-			}
-		],
+		"pipelines": [],
 		"type": "BlobEventsTrigger",
 		"typeProperties": {
 			"blobPathBeginsWith": "/adfdemo/blobs/input/xinput/HourlySales.csv",

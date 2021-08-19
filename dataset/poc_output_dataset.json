@@ -6,10 +6,10 @@
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"baseDirectoryName": {
+			"directoryName": {
 				"type": "string"
 			},
-			"directoryName": {
+			"schemaName": {
 				"type": "string"
 			},
 			"fileName": {
@@ -26,7 +26,7 @@
 					"type": "Expression"
 				},
 				"folderPath": {
-					"value": "@concat(dataset().baseDirectoryName,'/',dataset().directoryName)",
+					"value": "@concat(dataset().directoryName,'/',dataset().schemaName)",
 					"type": "Expression"
 				},
 				"fileSystem": "raw"

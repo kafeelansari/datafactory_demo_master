@@ -5,11 +5,20 @@
 		"factoryName": {
 			"value": "DF-Demo-Kafeel-1"
 		},
+		"AzureDataLakeStorage1_accountKey": {
+			"value": ""
+		},
 		"linked_serv_demo_kafeel_connectionString": {
 			"value": ""
 		},
 		"ls_demo_kafeel_dynamic_connectionString": {
 			"value": ""
+		},
+		"poc_sql_server_ls_connectionString": {
+			"value": ""
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"value": "https://poc1demosagen2.dfs.core.windows.net"
 		},
 		"EventDemoTrigger_properties_LoadHourlyandDailyData_parameters_FileName": {
 			"value": "Test"

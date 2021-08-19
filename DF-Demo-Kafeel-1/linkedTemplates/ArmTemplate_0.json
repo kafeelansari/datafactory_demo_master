@@ -15,26 +15,23 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_demo_kafeel_dynamic'"
 		},
-		"EventDemoTrigger_properties_LoadHourlyandDailyData_parameters_FileName": {
-			"type": "string",
-			"defaultValue": "Test"
+		"AzureDataLakeStorage1_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
 		},
-		"EventDemoTrigger_properties_typeProperties_scope": {
+		"poc_sql_server_ls_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'poc_sql_server_ls'"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"type": "string",
-			"defaultValue": "/subscriptions/457145b1-eda5-41ea-945b-f9e3585b8deb/resourceGroups/RG_Demo_Kafeel/providers/Microsoft.Storage/storageAccounts/demosakafeel"
+			"defaultValue": "https://poc1demosagen2.dfs.core.windows.net"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
-		{
-			"name": "[concat(parameters('factoryName'), '/default')]",
-			"type": "Microsoft.DataFactory/factories/managedVirtualNetworks",
-			"apiVersion": "2018-06-01",
-			"properties": {},
-			"dependsOn": []
-		},
 		{
 			"name": "[concat(parameters('factoryName'), '/integrationRuntime1')]",
 			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
@@ -53,6 +50,13 @@
 					}
 				}
 			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/default')]",
+			"type": "Microsoft.DataFactory/factories/managedVirtualNetworks",
+			"apiVersion": "2018-06-01",
+			"properties": {},
 			"dependsOn": []
 		},
 		{
@@ -317,6 +321,62 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/linked_serv_demo_kafeel')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureDataLakeStorage1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/poc_sql_server_ls')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"parameters": {
+					"serverName": {
+						"type": "string"
+					},
+					"dbName": {
+						"type": "string"
+					},
+					"userName": {
+						"type": "string"
+					},
+					"password": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "SqlServer",
+				"typeProperties": {
+					"connectionString": "[parameters('poc_sql_server_ls_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
 			]
 		},
 		{
@@ -977,79 +1037,41 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/executePipelineActivityExample')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
+			"name": "[concat(parameters('factoryName'), '/SourceTableDS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"activities": [
-					{
-						"name": "Execute Pipeline1",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "genericeCopyTablePipeline",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"SrcTable": {
-									"value": "@pipeline().parameters.sourceTableFromMain",
-									"type": "Expression"
-								},
-								"DestTable": {
-									"value": "@pipeline().parameters.destinationTableFromMain",
-									"type": "Expression"
-								}
-							}
-						}
+				"linkedServiceName": {
+					"referenceName": "poc_sql_server_ls",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"serverName": "demokafeel.database.windows.net",
+						"dbName": "POC_Demo",
+						"userName": "sqladmin",
+						"password": "PAssword@123"
 					}
-				],
+				},
 				"parameters": {
-					"sourceTableFromMain": {
-						"type": "string"
-					},
-					"destinationTableFromMain": {
+					"tableName": {
 						"type": "string"
 					}
 				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/genericeCopyTablePipeline')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/EventDemoTrigger')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
 				"annotations": [],
-				"runtimeState": "Stopped",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "LoadHourlyandDailyData",
-							"type": "PipelineReference"
-						},
-						"parameters": {
-							"FileName": "[parameters('EventDemoTrigger_properties_LoadHourlyandDailyData_parameters_FileName')]"
-						}
-					}
-				],
-				"type": "BlobEventsTrigger",
+				"type": "SqlServerTable",
+				"schema": [],
 				"typeProperties": {
-					"blobPathBeginsWith": "/adfdemo/blobs/input/xinput/HourlySales.csv",
-					"ignoreEmptyBlobs": true,
-					"scope": "[parameters('EventDemoTrigger_properties_typeProperties_scope')]",
-					"events": [
-						"Microsoft.Storage.BlobCreated"
-					]
+					"schema": {
+						"value": "SalesLT",
+						"type": "Expression"
+					},
+					"table": {
+						"value": "@dataset().tableName",
+						"type": "Expression"
+					}
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/LoadHourlyandDailyData')]"
+				"[concat(variables('factoryId'), '/linkedServices/poc_sql_server_ls')]"
 			]
 		}
 	]

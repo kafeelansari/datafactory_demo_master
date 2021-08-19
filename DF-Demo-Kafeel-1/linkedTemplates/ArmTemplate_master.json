@@ -7,6 +7,10 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "DF-Demo-Kafeel-1"
 		},
+		"AzureDataLakeStorage1_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
+		},
 		"linked_serv_demo_kafeel_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'linked_serv_demo_kafeel'"
@@ -14,6 +18,14 @@
 		"ls_demo_kafeel_dynamic_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_demo_kafeel_dynamic'"
+		},
+		"poc_sql_server_ls_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'poc_sql_server_ls'"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://poc1demosagen2.dfs.core.windows.net"
 		},
 		"EventDemoTrigger_properties_LoadHourlyandDailyData_parameters_FileName": {
 			"type": "string",
@@ -56,6 +68,33 @@
 					"ls_demo_kafeel_dynamic_connectionString": {
 						"value": "[parameters('ls_demo_kafeel_dynamic_connectionString')]"
 					},
+					"AzureDataLakeStorage1_accountKey": {
+						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
+					},
+					"poc_sql_server_ls_connectionString": {
+						"value": "[parameters('poc_sql_server_ls_connectionString')]"
+					},
+					"AzureDataLakeStorage1_properties_typeProperties_url": {
+						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "DF-Demo-Kafeel-1_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
 					"EventDemoTrigger_properties_LoadHourlyandDailyData_parameters_FileName": {
 						"value": "[parameters('EventDemoTrigger_properties_LoadHourlyandDailyData_parameters_FileName')]"
 					},
@@ -64,7 +103,9 @@
 					}
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'DF-Demo-Kafeel-1_ArmTemplate_0')]"
+			]
 		}
 	]
 }

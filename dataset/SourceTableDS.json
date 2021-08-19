@@ -14,9 +14,6 @@
 		"parameters": {
 			"tableName": {
 				"type": "string"
-			},
-			"schema": {
-				"type": "string"
 			}
 		},
 		"annotations": [],

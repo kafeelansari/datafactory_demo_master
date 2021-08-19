@@ -26,7 +26,13 @@
 					},
 					"dataset": {
 						"referenceName": "lookupInputTables",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"servName": "demokafeel.database.windows.net",
+							"dbName": "POC_Demo",
+							"userName": "sqladmin",
+							"password": "Password@123"
+						}
 					}
 				}
 			}

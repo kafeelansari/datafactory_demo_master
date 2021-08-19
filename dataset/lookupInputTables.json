@@ -1,0 +1,12 @@
+{
+	"name": "lookupInputTables",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "poc_sql_server_ls",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": []
+	}
+}

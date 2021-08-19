@@ -8,7 +8,7 @@
 				"serverName": "demokafeel.database.windows.net",
 				"dbName": "POC_Demo",
 				"userName": "sqladmin",
-				"password": "PAssword@123"
+				"password": "Password@123"
 			}
 		},
 		"parameters": {

@@ -400,7 +400,10 @@
 					}
 				},
 				"parameters": {
-					"tableName": {
+					"sourceSchema": {
+						"type": "string"
+					},
+					"sourceTableName": {
 						"type": "string"
 					}
 				},
@@ -409,11 +412,11 @@
 				"schema": [],
 				"typeProperties": {
 					"schema": {
-						"value": "SalesLT",
+						"value": "@dataset().sourceSchema",
 						"type": "Expression"
 					},
 					"table": {
-						"value": "@dataset().tableName",
+						"value": "@dataset().sourceTableName",
 						"type": "Expression"
 					}
 				}
@@ -482,7 +485,13 @@
 					"type": "LinkedServiceReference"
 				},
 				"parameters": {
+					"baseDirectoryName": {
+						"type": "string"
+					},
 					"directoryName": {
+						"type": "string"
+					},
+					"fileName": {
 						"type": "string"
 					}
 				},
@@ -492,11 +501,11 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"fileName": {
-							"value": "@concat(dataset().directoryName,formatDateTime(utcnow(),'yyyy-MM-dd'))",
+							"value": "@concat(dataset().fileName,'_',formatDateTime(utcnow()))",
 							"type": "Expression"
 						},
 						"folderPath": {
-							"value": "@dataset().directoryName",
+							"value": "@concat(dataset().baseDirectoryName,'/',dataset().directoryName)",
 							"type": "Expression"
 						},
 						"fileSystem": "raw"
@@ -531,7 +540,7 @@
 							"source": {
 								"type": "SqlServerSource",
 								"sqlReaderQuery": {
-									"value": "select TABLE_NAME from INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA = 'SalesLT' and TABLE_TYPE = 'BASE TABLE'",
+									"value": "select SourcePath,SourceTableName,DestinationBaseDir,DestinationDirectory,DestinationFileName from dbo.Info_lookup",
 									"type": "Expression"
 								},
 								"queryTimeout": "02:00:00",
@@ -633,8 +642,12 @@
 											"referenceName": "SourceTableDS",
 											"type": "DatasetReference",
 											"parameters": {
-												"tableName": {
-													"value": "@item().TABLE_NAME",
+												"sourceSchema": {
+													"value": "@item().SourcePath",
+													"type": "Expression"
+												},
+												"sourceTableName": {
+													"value": "@item().SourceTableName",
 													"type": "Expression"
 												}
 											}
@@ -645,8 +658,16 @@
 											"referenceName": "poc_output_dataset",
 											"type": "DatasetReference",
 											"parameters": {
+												"baseDirectoryName": {
+													"value": "@item().DestinationBaseDir",
+													"type": "Expression"
+												},
 												"directoryName": {
-													"value": "@item().TABLE_NAME",
+													"value": "@item().DestinationDirectory",
+													"type": "Expression"
+												},
+												"fileName": {
+													"value": "item().DestinationFileName",
 													"type": "Expression"
 												}
 											}
@@ -677,6 +698,80 @@
 				"[concat(variables('factoryId'), '/datasets/lookupInputTables')]",
 				"[concat(variables('factoryId'), '/datasets/SourceTableDS')]",
 				"[concat(variables('factoryId'), '/datasets/poc_output_dataset')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "listOfInputTablesLookup",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"sqlReaderQuery": {
+									"value": "select SourcePath,SourceTableName,DestinationBaseDir,DestinationDirectory,DestinationFileName from dbo.Info_lookup",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "lookupInputTables",
+								"type": "DatasetReference",
+								"parameters": {
+									"servName": {
+										"value": "@pipeline().parameters.gb_servername",
+										"type": "Expression"
+									},
+									"dbName": {
+										"value": "@pipeline().parameters.gb_dbname",
+										"type": "Expression"
+									},
+									"userName": {
+										"value": "@pipeline().parameters.gb_username",
+										"type": "Expression"
+									},
+									"password": {
+										"value": "@pipeline().parameters.gb_password",
+										"type": "Expression"
+									}
+								}
+							},
+							"firstRowOnly": false
+						}
+					}
+				],
+				"parameters": {
+					"gb_servername": {
+						"type": "string"
+					},
+					"gb_dbname": {
+						"type": "string"
+					},
+					"gb_username": {
+						"type": "string"
+					},
+					"gb_password": {
+						"type": "string"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/lookupInputTables')]"
 			]
 		},
 		{

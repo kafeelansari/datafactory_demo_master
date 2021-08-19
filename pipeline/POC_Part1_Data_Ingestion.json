@@ -120,7 +120,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"directoryName": {
-											"value": "@item()",
+											"value": "@item().TABLE_NAME",
 											"type": "Expression"
 										}
 									}

@@ -12,10 +12,10 @@
 			}
 		},
 		"parameters": {
-			"tableName": {
+			"sourceSchema": {
 				"type": "string"
 			},
-			"schemaName": {
+			"sourceTableName": {
 				"type": "string"
 			}
 		},

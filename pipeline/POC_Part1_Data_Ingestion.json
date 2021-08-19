@@ -51,7 +51,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('listOfInputTablesLookup').output",
+						"value": "@activity('listOfInputTablesLookup').output.value",
 						"type": "Expression"
 					},
 					"isSequential": true,

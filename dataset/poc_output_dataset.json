@@ -22,11 +22,11 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": {
-					"value": "@concat(dataset().directoryName,formatDateTime(utcnow(),'yyyy-MM-dd'))",
+					"value": "@concat(dataset().fileName,'_',formatDateTime(utcnow()))",
 					"type": "Expression"
 				},
 				"folderPath": {
-					"value": "@dataset().directoryName",
+					"value": "@concat(dataset().baseDirectoryName,'/',dataset().directoryName)",
 					"type": "Expression"
 				},
 				"fileSystem": "raw"

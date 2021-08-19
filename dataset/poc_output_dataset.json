@@ -6,7 +6,7 @@
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"filename": {
+			"directoryName": {
 				"type": "string"
 			}
 		},
@@ -16,9 +16,10 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": {
-					"value": "@dataset().filename",
+					"value": "@concat(dataset().directoryName,formatDateTime(utcnow(),'yyyy-MM-dd'))",
 					"type": "Expression"
 				},
+				"folderPath": "@dataset().directoryName",
 				"fileSystem": "raw"
 			},
 			"compressionCodec": "gzip"

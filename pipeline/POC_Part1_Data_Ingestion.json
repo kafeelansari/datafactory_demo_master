@@ -18,7 +18,7 @@
 					"source": {
 						"type": "SqlServerSource",
 						"sqlReaderQuery": {
-							"value": "@select TABLE_NAME from INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA = pipeline().parameters.table_schema and TABLE_TYPE = 'BASE TABLE'",
+							"value": "select TABLE_NAME from INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA = 'SalesLT' and TABLE_TYPE = 'BASE TABLE'",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",

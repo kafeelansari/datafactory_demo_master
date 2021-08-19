@@ -136,8 +136,16 @@
 									"referenceName": "poc_output_dataset",
 									"type": "DatasetReference",
 									"parameters": {
+										"baseDirectoryName": {
+											"value": "@item().DestinationBaseDir",
+											"type": "Expression"
+										},
 										"directoryName": {
-											"value": "@item().TABLE_NAME",
+											"value": "@item().DestinationDirectory",
+											"type": "Expression"
+										},
+										"fileName": {
+											"value": "item().DestinationFileName",
 											"type": "Expression"
 										}
 									}

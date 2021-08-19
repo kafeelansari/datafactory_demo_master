@@ -18,7 +18,7 @@
 					"source": {
 						"type": "SqlServerSource",
 						"sqlReaderQuery": {
-							"value": "select TABLE_NAME from INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA = 'SalesLT' and TABLE_TYPE = 'BASE TABLE'",
+							"value": "select SourcePath,SourceTableName,DestinationBaseDir,DestinationDirectory,DestinationFileName from dbo.Info_lookup",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",

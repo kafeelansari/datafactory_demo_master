@@ -108,7 +108,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"tableName": {
-											"value": "@item()",
+											"value": "@item().TABLE_NAME",
 											"type": "Expression"
 										}
 									}

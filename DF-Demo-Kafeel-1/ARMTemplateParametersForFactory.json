@@ -20,11 +20,20 @@
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"value": "https://poc1demosagen2.dfs.core.windows.net"
 		},
-		"EventDemoTrigger_properties_LoadHourlyandDailyData_parameters_FileName": {
-			"value": "Test"
-		},
 		"EventDemoTrigger_properties_typeProperties_scope": {
 			"value": "/subscriptions/457145b1-eda5-41ea-945b-f9e3585b8deb/resourceGroups/RG_Demo_Kafeel/providers/Microsoft.Storage/storageAccounts/demosakafeel"
+		},
+		"poctriggerdatacopy_properties_POC_Part1_Data_Ingestion_parameters_gb_servername": {
+			"value": "demokafeel.database.windows.net"
+		},
+		"poctriggerdatacopy_properties_POC_Part1_Data_Ingestion_parameters_gb_dbname": {
+			"value": "POC_Demo"
+		},
+		"poctriggerdatacopy_properties_POC_Part1_Data_Ingestion_parameters_gb_username": {
+			"value": "sqladmin"
+		},
+		"poctriggerdatacopy_properties_POC_Part1_Data_Ingestion_parameters_gb_password": {
+			"value": "Password@123"
 		}
 	}
 }

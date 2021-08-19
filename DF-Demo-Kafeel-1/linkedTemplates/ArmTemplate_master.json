@@ -27,13 +27,25 @@
 			"type": "string",
 			"defaultValue": "https://poc1demosagen2.dfs.core.windows.net"
 		},
-		"EventDemoTrigger_properties_LoadHourlyandDailyData_parameters_FileName": {
-			"type": "string",
-			"defaultValue": "Test"
-		},
 		"EventDemoTrigger_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/457145b1-eda5-41ea-945b-f9e3585b8deb/resourceGroups/RG_Demo_Kafeel/providers/Microsoft.Storage/storageAccounts/demosakafeel"
+		},
+		"poctriggerdatacopy_properties_POC_Part1_Data_Ingestion_parameters_gb_servername": {
+			"type": "string",
+			"defaultValue": "demokafeel.database.windows.net"
+		},
+		"poctriggerdatacopy_properties_POC_Part1_Data_Ingestion_parameters_gb_dbname": {
+			"type": "string",
+			"defaultValue": "POC_Demo"
+		},
+		"poctriggerdatacopy_properties_POC_Part1_Data_Ingestion_parameters_gb_username": {
+			"type": "string",
+			"defaultValue": "sqladmin"
+		},
+		"poctriggerdatacopy_properties_POC_Part1_Data_Ingestion_parameters_gb_password": {
+			"type": "string",
+			"defaultValue": "Password@123"
 		},
 		"containerUri": {
 			"type": "string",
@@ -74,38 +86,27 @@
 					"poc_sql_server_ls_connectionString": {
 						"value": "[parameters('poc_sql_server_ls_connectionString')]"
 					},
+					"EventDemoTrigger_properties_typeProperties_scope": {
+						"value": "[parameters('EventDemoTrigger_properties_typeProperties_scope')]"
+					},
 					"AzureDataLakeStorage1_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
+					},
+					"poctriggerdatacopy_properties_POC_Part1_Data_Ingestion_parameters_gb_servername": {
+						"value": "[parameters('poctriggerdatacopy_properties_POC_Part1_Data_Ingestion_parameters_gb_servername')]"
+					},
+					"poctriggerdatacopy_properties_POC_Part1_Data_Ingestion_parameters_gb_dbname": {
+						"value": "[parameters('poctriggerdatacopy_properties_POC_Part1_Data_Ingestion_parameters_gb_dbname')]"
+					},
+					"poctriggerdatacopy_properties_POC_Part1_Data_Ingestion_parameters_gb_username": {
+						"value": "[parameters('poctriggerdatacopy_properties_POC_Part1_Data_Ingestion_parameters_gb_username')]"
+					},
+					"poctriggerdatacopy_properties_POC_Part1_Data_Ingestion_parameters_gb_password": {
+						"value": "[parameters('poctriggerdatacopy_properties_POC_Part1_Data_Ingestion_parameters_gb_password')]"
 					}
 				}
 			},
 			"dependsOn": []
-		},
-		{
-			"name": "DF-Demo-Kafeel-1_ArmTemplate_1",
-			"type": "Microsoft.Resources/deployments",
-			"apiVersion": "2018-02-01",
-			"properties": {
-				"mode": "incremental",
-				"templateLink": {
-					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
-					"contentVersion": "1.0.0.0"
-				},
-				"parameters": {
-					"factoryName": {
-						"value": "[parameters('factoryName')]"
-					},
-					"EventDemoTrigger_properties_LoadHourlyandDailyData_parameters_FileName": {
-						"value": "[parameters('EventDemoTrigger_properties_LoadHourlyandDailyData_parameters_FileName')]"
-					},
-					"EventDemoTrigger_properties_typeProperties_scope": {
-						"value": "[parameters('EventDemoTrigger_properties_typeProperties_scope')]"
-					}
-				}
-			},
-			"dependsOn": [
-				"[resourceId('Microsoft.Resources/deployments', 'DF-Demo-Kafeel-1_ArmTemplate_0')]"
-			]
 		}
 	]
 }

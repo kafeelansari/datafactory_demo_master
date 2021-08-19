@@ -24,7 +24,7 @@
 		"schema": [],
 		"typeProperties": {
 			"schema": {
-				"value": "@dataset().schema",
+				"value": "SalesLT",
 				"type": "Expression"
 			},
 			"table": {

@@ -120,7 +120,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"filename": {
-											"value": "@item().value.TABLE_NAME",
+											"value": "@item()",
 											"type": "Expression"
 										}
 									}

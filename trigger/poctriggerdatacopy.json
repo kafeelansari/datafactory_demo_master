@@ -8,6 +8,12 @@
 				"pipelineReference": {
 					"referenceName": "POC_Part1_Data_Ingestion",
 					"type": "PipelineReference"
+				},
+				"parameters": {
+					"gb_servername": "demokafeel.database.windows.net",
+					"gb_dbname": "POC_Demo",
+					"gb_username": "sqladmin",
+					"gb_password": "Password@123"
 				}
 			}
 		],

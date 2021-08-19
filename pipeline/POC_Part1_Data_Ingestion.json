@@ -28,10 +28,22 @@
 						"referenceName": "lookupInputTables",
 						"type": "DatasetReference",
 						"parameters": {
-							"servName": "demokafeel.database.windows.net",
-							"dbName": "POC_Demo",
-							"userName": "sqladmin",
-							"password": "Password@123"
+							"servName": {
+								"value": "@pipeline().parameters.gb_servername",
+								"type": "Expression"
+							},
+							"dbName": {
+								"value": "@pipeline().parameters.gb_dbname",
+								"type": "Expression"
+							},
+							"userName": {
+								"value": "@pipeline().parameters.gb_username",
+								"type": "Expression"
+							},
+							"password": {
+								"value": "@pipeline().parameters.gb_password",
+								"type": "Expression"
+							}
 						}
 					},
 					"firstRowOnly": false
@@ -132,6 +144,20 @@
 				}
 			}
 		],
+		"parameters": {
+			"gb_servername": {
+				"type": "string"
+			},
+			"gb_dbname": {
+				"type": "string"
+			},
+			"gb_username": {
+				"type": "string"
+			},
+			"gb_password": {
+				"type": "string"
+			}
+		},
 		"annotations": []
 	}
 }

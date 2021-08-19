@@ -119,7 +119,7 @@
 									"referenceName": "poc_output_dataset",
 									"type": "DatasetReference",
 									"parameters": {
-										"filename": {
+										"directoryName": {
 											"value": "@item()",
 											"type": "Expression"
 										}

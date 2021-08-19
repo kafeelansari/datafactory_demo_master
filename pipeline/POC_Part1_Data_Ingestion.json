@@ -120,8 +120,12 @@
 									"referenceName": "SourceTableDS",
 									"type": "DatasetReference",
 									"parameters": {
-										"tableName": {
-											"value": "@item().TABLE_NAME",
+										"sourceSchema": {
+											"value": "@item().SourcePath",
+											"type": "Expression"
+										},
+										"sourceTableName": {
+											"value": "@item().SourceTableName",
 											"type": "Expression"
 										}
 									}

@@ -485,10 +485,10 @@
 					"type": "LinkedServiceReference"
 				},
 				"parameters": {
-					"baseDirectoryName": {
+					"directoryName": {
 						"type": "string"
 					},
-					"directoryName": {
+					"schemaName": {
 						"type": "string"
 					},
 					"fileName": {
@@ -505,7 +505,7 @@
 							"type": "Expression"
 						},
 						"folderPath": {
-							"value": "@concat(dataset().baseDirectoryName,'/',dataset().directoryName)",
+							"value": "@concat(dataset().directoryName,'/',dataset().schemaName)",
 							"type": "Expression"
 						},
 						"fileSystem": "raw"
@@ -658,16 +658,16 @@
 											"referenceName": "poc_output_dataset",
 											"type": "DatasetReference",
 											"parameters": {
-												"baseDirectoryName": {
-													"value": "@item().DestinationBaseDir",
-													"type": "Expression"
-												},
 												"directoryName": {
 													"value": "@item().DestinationDirectory",
 													"type": "Expression"
 												},
+												"schemaName": {
+													"value": "@item().SourcePath",
+													"type": "Expression"
+												},
 												"fileName": {
-													"value": "item().DestinationFileName",
+													"value": "@item().DestinationFileName",
 													"type": "Expression"
 												}
 											}

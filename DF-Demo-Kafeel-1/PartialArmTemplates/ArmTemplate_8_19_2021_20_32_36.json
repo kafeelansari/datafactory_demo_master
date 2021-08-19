@@ -1,0 +1,237 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "DF-Demo-Kafeel-1"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/POC_Part1_Data_Ingestion')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "listOfInputTablesLookup",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"sqlReaderQuery": {
+									"value": "select SourcePath,SourceTableName,DestinationBaseDir,DestinationDirectory,DestinationFileName from dbo.Info_lookup",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "lookupInputTables",
+								"type": "DatasetReference",
+								"parameters": {
+									"servName": {
+										"value": "@pipeline().parameters.gb_servername",
+										"type": "Expression"
+									},
+									"dbName": {
+										"value": "@pipeline().parameters.gb_dbname",
+										"type": "Expression"
+									},
+									"userName": {
+										"value": "@pipeline().parameters.gb_username",
+										"type": "Expression"
+									},
+									"password": {
+										"value": "@pipeline().parameters.gb_password",
+										"type": "Expression"
+									}
+								}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "loop_through_table_names",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "listOfInputTablesLookup",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('listOfInputTablesLookup').output.value",
+								"type": "Expression"
+							},
+							"isSequential": false,
+							"batchCount": 3,
+							"activities": [
+								{
+									"name": "Copy table data to ADLS Gen2",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [
+										{
+											"name": "Source",
+											"value": "SalesLT.@{item()}"
+										},
+										{
+											"name": "Destination",
+											"value": "raw//"
+										}
+									],
+									"typeProperties": {
+										"source": {
+											"type": "SqlServerSource",
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"sink": {
+											"type": "ParquetSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "ParquetWriteSettings"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "SourceTableDS",
+											"type": "DatasetReference",
+											"parameters": {
+												"sourceSchema": {
+													"value": "@item().SourcePath",
+													"type": "Expression"
+												},
+												"sourceTableName": {
+													"value": "@item().SourceTableName",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "poc_output_dataset",
+											"type": "DatasetReference",
+											"parameters": {
+												"directoryName": {
+													"value": "@item().DestinationDirectory",
+													"type": "Expression"
+												},
+												"schemaName": {
+													"value": "@item().SourcePath",
+													"type": "Expression"
+												},
+												"fileName": {
+													"value": "@item().DestinationFileName",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"parameters": {
+					"gb_servername": {
+						"type": "string"
+					},
+					"gb_dbname": {
+						"type": "string"
+					},
+					"gb_username": {
+						"type": "string"
+					},
+					"gb_password": {
+						"type": "string"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/poc_output_dataset')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/poc_output_dataset')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"directoryName": {
+						"type": "string"
+					},
+					"schemaName": {
+						"type": "string"
+					},
+					"fileName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@concat(dataset().fileName,'_',formatDateTime(utcnow()))",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@concat(dataset().directoryName,'/',dataset().schemaName)",
+							"type": "Expression"
+						},
+						"fileSystem": "raw"
+					},
+					"compressionCodec": "none"
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		}
+	]
+}

@@ -1,5 +1,5 @@
 {
-	"name": "ListOfLookupTablesDataset",
+	"name": "SourceTableDS",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "poc_sql_server_ls",

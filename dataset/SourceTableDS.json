@@ -24,11 +24,11 @@
 		"schema": [],
 		"typeProperties": {
 			"schema": {
-				"value": "SalesLT",
+				"value": "@dataset().sourceSchema",
 				"type": "Expression"
 			},
 			"table": {
-				"value": "@dataset().tableName",
+				"value": "@dataset().sourceTableName",
 				"type": "Expression"
 			}
 		}

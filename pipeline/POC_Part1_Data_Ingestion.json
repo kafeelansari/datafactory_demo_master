@@ -145,7 +145,7 @@
 											"type": "Expression"
 										},
 										"fileName": {
-											"value": "item().DestinationFileName",
+											"value": "@item().DestinationFileName",
 											"type": "Expression"
 										}
 									}

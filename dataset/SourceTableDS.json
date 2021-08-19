@@ -3,7 +3,13 @@
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "poc_sql_server_ls",
-			"type": "LinkedServiceReference"
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"serverName": "demokafeel.database.windows.net",
+				"dbName": "POC_Demo",
+				"userName": "sqladmin",
+				"password": "PAssword@123"
+			}
 		},
 		"parameters": {
 			"tableName": {

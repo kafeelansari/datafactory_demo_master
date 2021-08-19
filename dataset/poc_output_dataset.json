@@ -19,7 +19,10 @@
 					"value": "@concat(dataset().directoryName,formatDateTime(utcnow(),'yyyy-MM-dd'))",
 					"type": "Expression"
 				},
-				"folderPath": "@dataset().directoryName",
+				"folderPath": {
+					"value": "@dataset().directoryName",
+					"type": "Expression"
+				},
 				"fileSystem": "raw"
 			},
 			"compressionCodec": "none"

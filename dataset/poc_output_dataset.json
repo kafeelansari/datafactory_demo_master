@@ -22,7 +22,7 @@
 				"folderPath": "@dataset().directoryName",
 				"fileSystem": "raw"
 			},
-			"compressionCodec": "gzip"
+			"compressionCodec": "none"
 		},
 		"schema": []
 	}

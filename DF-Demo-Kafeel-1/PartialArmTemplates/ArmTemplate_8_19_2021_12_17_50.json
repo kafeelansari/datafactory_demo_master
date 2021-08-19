@@ -6,103 +6,12 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "DF-Demo-Kafeel-1"
-		},
-		"EventDemoTrigger_properties_LoadHourlyandDailyData_parameters_FileName": {
-			"type": "string",
-			"defaultValue": "Test"
-		},
-		"EventDemoTrigger_properties_typeProperties_scope": {
-			"type": "string",
-			"defaultValue": "/subscriptions/457145b1-eda5-41ea-945b-f9e3585b8deb/resourceGroups/RG_Demo_Kafeel/providers/Microsoft.Storage/storageAccounts/demosakafeel"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
-		{
-			"name": "[concat(parameters('factoryName'), '/lookupInputTables')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "poc_sql_server_ls",
-					"type": "LinkedServiceReference",
-					"parameters": {
-						"serverName": {
-							"value": "@dataset().servName",
-							"type": "Expression"
-						},
-						"dbName": {
-							"value": "@dataset().dbName",
-							"type": "Expression"
-						},
-						"userName": {
-							"value": "@dataset().userName",
-							"type": "Expression"
-						},
-						"password": {
-							"value": "@dataset().password",
-							"type": "Expression"
-						}
-					}
-				},
-				"parameters": {
-					"servName": {
-						"type": "string"
-					},
-					"dbName": {
-						"type": "string"
-					},
-					"userName": {
-						"type": "string"
-					},
-					"password": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "SqlServerTable",
-				"schema": [],
-				"typeProperties": {}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/poc_output_dataset')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"directoryName": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": {
-							"value": "@concat(dataset().directoryName,formatDateTime(utcnow(),'yyyy-MM-dd'))",
-							"type": "Expression"
-						},
-						"folderPath": {
-							"value": "@dataset().directoryName",
-							"type": "Expression"
-						},
-						"fileSystem": "raw"
-					},
-					"compressionCodec": "none"
-				},
-				"schema": []
-			},
-			"dependsOn": []
-		},
 		{
 			"name": "[concat(parameters('factoryName'), '/POC_Part1_Data_Ingestion')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
@@ -241,51 +150,9 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/lookupInputTables')]",
+				"[concat(variables('factoryId'), '/datasets/SourceTableDS')]",
 				"[concat(variables('factoryId'), '/datasets/poc_output_dataset')]"
 			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/executePipelineActivityExample')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Execute Pipeline1",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "genericeCopyTablePipeline",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"SrcTable": {
-									"value": "@pipeline().parameters.sourceTableFromMain",
-									"type": "Expression"
-								},
-								"DestTable": {
-									"value": "@pipeline().parameters.destinationTableFromMain",
-									"type": "Expression"
-								}
-							}
-						}
-					}
-				],
-				"parameters": {
-					"sourceTableFromMain": {
-						"type": "string"
-					},
-					"destinationTableFromMain": {
-						"type": "string"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
@@ -371,37 +238,76 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/lookupInputTables')]"
-			]
+			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/EventDemoTrigger')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
+			"name": "[concat(parameters('factoryName'), '/SourceTableDS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"annotations": [],
-				"runtimeState": "Stopped",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "LoadHourlyandDailyData",
-							"type": "PipelineReference"
-						},
-						"parameters": {
-							"FileName": "[parameters('EventDemoTrigger_properties_LoadHourlyandDailyData_parameters_FileName')]"
-						}
+				"linkedServiceName": {
+					"referenceName": "poc_sql_server_ls",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"serverName": "demokafeel.database.windows.net",
+						"dbName": "POC_Demo",
+						"userName": "sqladmin",
+						"password": "Password@123"
 					}
-				],
-				"type": "BlobEventsTrigger",
+				},
+				"parameters": {
+					"tableName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [],
 				"typeProperties": {
-					"blobPathBeginsWith": "/adfdemo/blobs/input/xinput/HourlySales.csv",
-					"ignoreEmptyBlobs": true,
-					"scope": "[parameters('EventDemoTrigger_properties_typeProperties_scope')]",
-					"events": [
-						"Microsoft.Storage.BlobCreated"
-					]
+					"schema": {
+						"value": "SalesLT",
+						"type": "Expression"
+					},
+					"table": {
+						"value": "@dataset().tableName",
+						"type": "Expression"
+					}
 				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/poc_output_dataset')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"directoryName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@concat(dataset().directoryName,formatDateTime(utcnow(),'yyyy-MM-dd'))",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().directoryName",
+							"type": "Expression"
+						},
+						"fileSystem": "raw"
+					},
+					"compressionCodec": "none"
+				},
+				"schema": []
 			},
 			"dependsOn": []
 		},
@@ -417,8 +323,7 @@
 						"pipelineReference": {
 							"referenceName": "POC_Part1_Data_Ingestion",
 							"type": "PipelineReference"
-						},
-						"parameters": {}
+						}
 					}
 				],
 				"type": "ScheduleTrigger",

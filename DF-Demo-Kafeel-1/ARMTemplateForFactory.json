@@ -295,7 +295,6 @@
 									"typeProperties": {
 										"source": {
 											"type": "SqlServerSource",
-											"sqlReaderQuery": "select * from tableName",
 											"queryTimeout": "02:00:00",
 											"partitionOption": "None"
 										},
@@ -324,7 +323,7 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"tableName": {
-													"value": "@item()",
+													"value": "@item().TABLE_NAME",
 													"type": "Expression"
 												}
 											}
@@ -335,8 +334,8 @@
 											"referenceName": "poc_output_dataset",
 											"type": "DatasetReference",
 											"parameters": {
-												"filename": {
-													"value": "@item()",
+												"directoryName": {
+													"value": "@item().TABLE_NAME",
 													"type": "Expression"
 												}
 											}
@@ -776,6 +775,94 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "listOfInputTablesLookup",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"sqlReaderQuery": {
+									"value": "select TABLE_NAME from INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA = 'SalesLT' and TABLE_TYPE = 'BASE TABLE'",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "lookupInputTables",
+								"type": "DatasetReference",
+								"parameters": {
+									"servName": "demokafeel.database.windows.net",
+									"dbName": "POC_Demo",
+									"userName": "sqladmin",
+									"password": "Password@123"
+								}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "loop_through_table_names",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "listOfInputTablesLookup",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('listOfInputTablesLookup').output.value",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "Set variable1",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "FileName",
+										"value": {
+											"value": "@item().TABLE_NAME",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"variables": {
+					"FileName": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/lookupInputTables')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/pipeline_Filter_ForEach_Acitivity')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -932,7 +1019,7 @@
 						"serverName": "demokafeel.database.windows.net",
 						"dbName": "POC_Demo",
 						"userName": "sqladmin",
-						"password": "PAssword@123"
+						"password": "Password@123"
 					}
 				},
 				"parameters": {
@@ -1097,7 +1184,7 @@
 					"type": "LinkedServiceReference"
 				},
 				"parameters": {
-					"filename": {
+					"directoryName": {
 						"type": "string"
 					}
 				},
@@ -1107,12 +1194,16 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"fileName": {
-							"value": "@dataset().filename",
+							"value": "@concat(dataset().directoryName,formatDateTime(utcnow(),'yyyy-MM-dd'))",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().directoryName",
 							"type": "Expression"
 						},
 						"fileSystem": "raw"
 					},
-					"compressionCodec": "gzip"
+					"compressionCodec": "none"
 				},
 				"schema": []
 			},
@@ -1331,6 +1422,45 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/LoadHourlyandDailyData')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/poctriggerdatacopy')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "POC_Part1_Data_Ingestion",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2021-08-19T06:45:00",
+						"endTime": "2021-08-22T06:45:00",
+						"timeZone": "India Standard Time",
+						"schedule": {
+							"minutes": [
+								0
+							],
+							"hours": [
+								19
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/POC_Part1_Data_Ingestion')]"
 			]
 		},
 		{

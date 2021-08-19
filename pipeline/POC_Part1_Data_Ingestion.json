@@ -117,7 +117,13 @@
 							"outputs": [
 								{
 									"referenceName": "poc_output_dataset",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"filename": {
+											"value": "@item().txt",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						}
